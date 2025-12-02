@@ -9,13 +9,22 @@ from utils import read_stub, save_stub
 
 class BallTracker:
     """
-    A class that handles basketball detection and tracking using YOLO.
+    A class that handles ball detection and tracking using YOLO.
 
     This class provides methods to detect the ball in video frames, process detections
     in batches, and refine tracking results through filtering and interpolation.
+    Adapted to work with different model types (basketball or football).
     """
-    def __init__(self, model_path):
-        self.model = YOLO(model_path) 
+    def __init__(self, model_path, ball_class_name='ball'):
+        self.model = YOLO(model_path)
+        self.ball_class_name = ball_class_name.lower()
+        
+        # Get the class names from the model
+        self.class_names = self.model.names
+        self.class_names_inv = {v.lower(): k for k, v in self.class_names.items()}
+        
+        print(f"[BallTracker] Model classes: {self.class_names}")
+        print(f"[BallTracker] Looking for ball class: '{self.ball_class_name}'") 
 
     def detect_frames(self, frames):
         """
@@ -56,14 +65,11 @@ class BallTracker:
         tracks=[]
 
         for frame_num, detection in enumerate(detections):
-            cls_names = detection.names
-            cls_names_inv = {v:k for k,v in cls_names.items()}
-
-            # Covert to supervision Detection format
+            # Convert to supervision Detection format
             detection_supervision = sv.Detections.from_ultralytics(detection)
 
             tracks.append({})
-            chosen_bbox =None
+            chosen_bbox = None
             max_confidence = 0
             
             for frame_detection in detection_supervision:
@@ -71,13 +77,16 @@ class BallTracker:
                 cls_id = frame_detection[3]
                 confidence = frame_detection[2]
                 
-                if cls_id == cls_names_inv['Ball']:
-                    if max_confidence<confidence:
+                # Get class name from ID and compare (case-insensitive)
+                class_name = self.class_names.get(int(cls_id), '').lower()
+                
+                if class_name == self.ball_class_name:
+                    if max_confidence < confidence:
                         chosen_bbox = bbox
                         max_confidence = confidence
 
             if chosen_bbox is not None:
-                tracks[frame_num][1] = {"bbox":chosen_bbox}
+                tracks[frame_num][1] = {"bbox": chosen_bbox}
 
         save_stub(stub_path,tracks)
         
@@ -94,7 +103,7 @@ class BallTracker:
             list: Filtered ball positions with incorrect detections removed.
         """
         
-        maximum_allowed_distance = 25
+        maximum_allowed_distance = 50  # Increased for football field size
         last_good_frame_index = -1
 
         for i in range(len(ball_positions)):
@@ -119,7 +128,7 @@ class BallTracker:
 
         return ball_positions
 
-    def interpolate_ball_positions(self,ball_positions):
+    def interpolate_ball_positions(self, ball_positions):
         """
         Interpolate missing ball positions to create smooth tracking results.
 
@@ -129,12 +138,43 @@ class BallTracker:
         Returns:
             list: List of ball positions with interpolated values filling the gaps.
         """
-        ball_positions = [x.get(1,{}).get('bbox',[]) for x in ball_positions]
-        df_ball_positions = pd.DataFrame(ball_positions,columns=['x1','y1','x2','y2'])
-
+        # Extract bbox values, handling empty detections
+        ball_positions_list = [x.get(1, {}).get('bbox', []) for x in ball_positions]
+        
+        # Filter out empty lists to get valid detections
+        valid_positions = [pos for pos in ball_positions_list if len(pos) > 0]
+        
+        # If no valid detections, return original
+        if len(valid_positions) == 0:
+            return ball_positions
+        
+        # Create DataFrame only with valid positions
+        df_ball_positions = pd.DataFrame(valid_positions, columns=['x1', 'y1', 'x2', 'y2'])
+        
         # Interpolate missing values
         df_ball_positions = df_ball_positions.interpolate()
         df_ball_positions = df_ball_positions.bfill()
-
-        ball_positions = [{1: {"bbox":x}} for x in df_ball_positions.to_numpy().tolist()]
-        return ball_positions
+        df_ball_positions = df_ball_positions.ffill()
+        
+        # Reconstruct with interpolated values
+        interpolated_list = df_ball_positions.to_numpy().tolist()
+        
+        # Map back to original structure, filling gaps
+        result = []
+        valid_idx = 0
+        for i, original_pos in enumerate(ball_positions_list):
+            if len(original_pos) > 0:
+                # Use interpolated value for valid positions
+                if valid_idx < len(interpolated_list):
+                    result.append({1: {"bbox": interpolated_list[valid_idx]}})
+                    valid_idx += 1
+                else:
+                    result.append({1: {"bbox": original_pos}})
+            else:
+                # For empty positions, use last valid interpolated value if available
+                if valid_idx > 0 and valid_idx <= len(interpolated_list):
+                    result.append({1: {"bbox": interpolated_list[valid_idx - 1]}})
+                else:
+                    result.append({1: {"bbox": []}})
+        
+        return result

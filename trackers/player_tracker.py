@@ -10,16 +10,26 @@ class PlayerTracker:
 
     This class combines YOLO object detection with ByteTrack tracking to maintain consistent
     player identities across frames while processing detections in batches.
+    Adapted to work with different model types (basketball or NFL).
     """
-    def __init__(self, model_path):
+    def __init__(self, model_path, player_class_name='player'):
         """
         Initialize the PlayerTracker with YOLO model and ByteTrack tracker.
 
         Args:
             model_path (str): Path to the YOLO model weights.
+            player_class_name (str): Name of the player class in the model. Defaults to 'player'.
         """
         self.model = YOLO(model_path) 
         self.tracker = sv.ByteTrack()
+        self.player_class_name = player_class_name.lower()
+        
+        # Get the class names from the model
+        self.class_names = self.model.names
+        self.class_names_inv = {v.lower(): k for k, v in self.class_names.items()}
+        
+        print(f"[PlayerTracker] Model classes: {self.class_names}")
+        print(f"[PlayerTracker] Looking for player class: '{self.player_class_name}'")
 
     def detect_frames(self, frames):
         """
@@ -76,8 +86,11 @@ class PlayerTracker:
                 bbox = frame_detection[0].tolist()
                 cls_id = frame_detection[3]
                 track_id = frame_detection[4]
-
-                if cls_id == cls_names_inv['Player']:
+                
+                # Get class name from ID and compare (case-insensitive)
+                class_name = self.class_names.get(int(cls_id), '').lower()
+                
+                if class_name == self.player_class_name:
                     tracks[frame_num][track_id] = {"bbox":bbox}
         
         save_stub(stub_path,tracks)
