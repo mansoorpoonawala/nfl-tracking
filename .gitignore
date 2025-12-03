@@ -1,4 +1,26 @@
-__pycache__/
+# Data and outputs
+stubs/
+output_videos/
+input_videos/
+runs/
 *.pt
 *.avi
-*.pkl
+*.mp4
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.pytest_cache/
+venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store

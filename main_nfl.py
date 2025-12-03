@@ -4,15 +4,19 @@ from utils import read_video, save_video
 from trackers import PlayerTracker, BallTracker
 # from team_assigner import TeamAssigner  # Commented out to avoid memory crash
 from drawers import (
-    PlayerTracksDrawer, 
-    BallTracksDrawer,
+    PlayerTracksDrawer,
     FrameNumberDrawer
 )
+
+from drawers.ball_tracks_drawer_new import BallTracksDrawer
+
 from configs import (
     STUBS_DEFAULT_PATH,
     PLAYER_DETECTOR_PATH,
     BALL_DETECTOR_PATH,
-    OUTPUT_VIDEO_PATH
+    OUTPUT_VIDEO_PATH,
+    PLAYER_CLASS_NAME,
+    BALL_CLASS_NAME
 )
 
 def parse_args():
@@ -24,9 +28,9 @@ def parse_args():
                         help='Path to stub directory')
     parser.add_argument('--skip_stubs', action='store_true',
                         help='Skip reading from stubs and recompute everything')
-    parser.add_argument('--player_class', type=str, default='player',
+    parser.add_argument('--player_class', type=str, default=PLAYER_CLASS_NAME,
                         help='Name of player class in the model')
-    parser.add_argument('--ball_class', type=str, default='ball',
+    parser.add_argument('--ball_class', type=str, default=BALL_CLASS_NAME,
                         help='Name of ball class in the model')
     return parser.parse_args()
 
@@ -40,6 +44,8 @@ def main():
     print(f"\n=== NFL Football Video Analysis ===")
     print(f"Input video: {args.input_video}")
     print(f"Output video: {args.output_video}")
+    print(f"Player detector: {PLAYER_DETECTOR_PATH}")
+    print(f"Ball detector: {BALL_DETECTOR_PATH}")
     print(f"Player class: {args.player_class}")
     print(f"Ball class: {args.ball_class}")
     print(f"Skip stubs: {args.skip_stubs}\n")

@@ -74,6 +74,13 @@ class PlayerTracker:
             cls_names = detection.names
             cls_names_inv = {v:k for k,v in cls_names.items()}
 
+            # Extract confidence scores from YOLO results before converting to supervision
+            yolo_boxes = detection.boxes
+            conf_dict = {}  # Map class_id to confidence
+            if yolo_boxes is not None:
+                for i, box in enumerate(yolo_boxes):
+                    conf_dict[i] = float(box.conf[0]) if box.conf is not None else 0.0
+
             # Covert to supervision Detection format
             detection_supervision = sv.Detections.from_ultralytics(detection)
 
@@ -91,7 +98,9 @@ class PlayerTracker:
                 class_name = self.class_names.get(int(cls_id), '').lower()
                 
                 if class_name == self.player_class_name:
-                    tracks[frame_num][track_id] = {"bbox":bbox}
+                    # Get confidence from the detection (default to 0.0 if not found)
+                    confidence = conf_dict.get(int(cls_id), 0.0)
+                    tracks[frame_num][track_id] = {"bbox":bbox, "confidence":confidence}
         
-        save_stub(stub_path,tracks)
+        save_stub(stub_path, tracks)
         return tracks

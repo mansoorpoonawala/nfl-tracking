@@ -1,0 +1,13 @@
+train: ../train/images
+val: ../valid/images
+test: ../test/images
+
+nc: 2
+names: ['Player', 'Referee']
+
+roboflow:
+  workspace: nflfootball
+  project: nfl-players-qs3y8
+  version: 5
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/nflfootball/nfl-players-qs3y8/dataset/5

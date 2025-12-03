@@ -36,61 +36,110 @@ def draw_traingle(frame,bbox,color):
 
     return frame
 
-def draw_ellipse(frame,bbox,color,track_id=None):
+def draw_ellipse(frame,bbox,color,track_id=None,confidence=None):
     """
-    Draws an ellipse and an optional rectangle with a track ID on the given frame at the specified bounding box location.
+    Draws an ellipse and an optional rectangle with a track ID and confidence score on the given frame at the specified bounding box location.
 
     Args:
         frame (numpy.ndarray): The frame on which to draw the ellipse.
         bbox (tuple): A tuple representing the bounding box (x, y, width, height).
         color (tuple): The color of the ellipse in BGR format.
         track_id (int, optional): The track ID to display inside a rectangle. Defaults to None.
+        confidence (float, optional): The confidence score to display. Defaults to None.
 
     Returns:
-        numpy.ndarray: The frame with the ellipse and optional track ID drawn on it.
+        numpy.ndarray: The frame with the ellipse and optional track ID and confidence drawn on it.
     """
+    y1 = int(bbox[1])
+    x1 = int(bbox[0])
     y2 = int(bbox[3])
-    x_center, _ = get_center_of_bbox(bbox)
-    width = get_bbox_width(bbox)
+    x2 = int(bbox[2])
 
-    cv2.ellipse(
+    # Draw white rectangle around player
+    cv2.rectangle(
         frame,
-        center=(x_center,y2),
-        axes=(int(width), int(0.35*width)),
-        angle=0.0,
-        startAngle=-45,
-        endAngle=235,
-        color = color,
-        thickness=2,
-        lineType=cv2.LINE_4
+        (x1, y1),
+        (x2, y2),
+        (255, 255, 255),  # White box
+        thickness=2
     )
 
-    rectangle_width = 40
-    rectangle_height=20
-    x1_rect = x_center - rectangle_width//2
-    x2_rect = x_center + rectangle_width//2
-    y1_rect = (y2- rectangle_height//2) +15
-    y2_rect = (y2+ rectangle_height//2) +15
-
+    # Draw label at top-left of bounding box
     if track_id is not None:
-        cv2.rectangle(frame,
-                        (int(x1_rect),int(y1_rect) ),
-                        (int(x2_rect),int(y2_rect)),
-                        color,
-                        cv2.FILLED)
+        # Prepare label text
+        label_text = f"Player"
+        if confidence is not None:
+            label_text += f" {confidence:.2f}"
         
-        x1_text = x1_rect+12
-        if track_id > 99:
-            x1_text -=10
-        
-        cv2.putText(
-            frame,
-            f"{track_id}",
-            (int(x1_text),int(y1_rect+15)),
+        # Get text size to create background
+        (text_width, text_height), baseline = cv2.getTextSize(
+            label_text,
             cv2.FONT_HERSHEY_SIMPLEX,
-            0.6,
-            (0,0,0),
+            0.5,
             2
         )
+        
+        # Draw background rectangle for text
+        cv2.rectangle(
+            frame,
+            (x1, y1 - text_height - 10),
+            (x1 + text_width + 10, y1),
+            (255, 255, 255),  # White background
+            cv2.FILLED
+        )
+        
+        # Draw text
+        cv2.putText(
+            frame,
+            label_text,
+            (x1 + 5, y1 - 5),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            0.5,
+            (0, 0, 0),  # Black text
+            2
+        )
+
+    return frame
+
+
+def draw_ball(frame, bbox, color=(0, 255, 0)):
+    """
+    Draws a box around the detected ball.
+
+    Args:
+        frame (numpy.ndarray): The frame on which to draw.
+        bbox (tuple): Bounding box (x1, y1, x2, y2).
+        color (tuple): Color in BGR format. Defaults to green.
+
+    Returns:
+        numpy.ndarray: The frame with ball box drawn.
+    """
+    if len(bbox) < 4:
+        return frame
+    
+    x1 = int(bbox[0])
+    y1 = int(bbox[1])
+    x2 = int(bbox[2])
+    y2 = int(bbox[3])
+
+    # Draw green box around ball
+    cv2.rectangle(
+        frame,
+        (x1, y1),
+        (x2, y2),
+        color,
+        thickness=2
+    )
+    
+    # Add "Football" label
+    cv2.putText(
+        frame,
+        "Football",
+        (x1 + 5, y1 - 5),
+        cv2.FONT_HERSHEY_SIMPLEX,
+        0.5,
+        color,
+        2
+    )
 
     return frame

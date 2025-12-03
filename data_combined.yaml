@@ -1,0 +1,7 @@
+path: /pscratch/sd/m/mpoona/nfl_training/data_combined_all
+train: train/images
+val: val/images
+test: test/images
+
+nc: 2
+names: ['player', 'football']

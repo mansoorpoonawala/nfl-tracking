@@ -1,0 +1,64 @@
+nohup: ignoring input
+Traceback (most recent call last):
+  File "/pscratch/sd/m/mpoona/nfl_training/train_combined_8gpu.py", line 15, in <module>
+    results = model.train(
+              ^^^^^^^^^^^^
+  File "/global/homes/m/mpoona/.local/perlmutter/python-3.11/lib/python3.11/site-packages/ultralytics/engine/model.py", line 773, in train
+Traceback (most recent call last):
+  File "/pscratch/sd/m/mpoona/nfl_training/train_combined_8gpu.py", line 15, in <module>
+    results = model.train(
+              ^^^^^^^^^^^^
+  File "/global/homes/m/mpoona/.local/perlmutter/python-3.11/lib/python3.11/site-packages/ultralytics/engine/model.py", line 773, in train
+    self.trainer.train()
+  File "/global/homes/m/mpoona/.local/perlmutter/python-3.11/lib/python3.11/site-packages/ultralytics/engine/trainer.py", line 233, in train
+    self.trainer.train()
+  File "/global/homes/m/mpoona/.local/perlmutter/python-3.11/lib/python3.11/site-packages/ultralytics/engine/trainer.py", line 233, in train
+    cmd, file = generate_ddp_command(self)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/global/homes/m/mpoona/.local/perlmutter/python-3.11/lib/python3.11/site-packages/ultralytics/utils/dist.py", line 90, in generate_ddp_command
+    cmd, file = generate_ddp_command(self)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/global/homes/m/mpoona/.local/perlmutter/python-3.11/lib/python3.11/site-packages/ultralytics/utils/dist.py", line 90, in generate_ddp_command
+    shutil.rmtree(trainer.save_dir)  # remove the save_dir
+    shutil.rmtree(trainer.save_dir)  # remove the save_dir
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/global/common/software/nersc/pe/conda-envs/24.1.0/python-3.11/nersc-python/lib/python3.11/shutil.py", line 738, in rmtree
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/global/common/software/nersc/pe/conda-envs/24.1.0/python-3.11/nersc-python/lib/python3.11/shutil.py", line 732, in rmtree
+Traceback (most recent call last):
+  File "/pscratch/sd/m/mpoona/nfl_training/train_combined_8gpu.py", line 15, in <module>
+    results = model.train(
+              ^^^^^^^^^^^^
+  File "/global/homes/m/mpoona/.local/perlmutter/python-3.11/lib/python3.11/site-packages/ultralytics/engine/model.py", line 773, in train
+    self.trainer.train()
+  File "/global/homes/m/mpoona/.local/perlmutter/python-3.11/lib/python3.11/site-packages/ultralytics/engine/trainer.py", line 233, in train
+    cmd, file = generate_ddp_command(self)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/global/homes/m/mpoona/.local/perlmutter/python-3.11/lib/python3.11/site-packages/ultralytics/utils/dist.py", line 90, in generate_ddp_command
+    shutil.rmtree(trainer.save_dir)  # remove the save_dir
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/global/common/software/nersc/pe/conda-envs/24.1.0/python-3.11/nersc-python/lib/python3.11/shutil.py", line 722, in rmtree
+    onerror(os.lstat, path, sys.exc_info())
+  File "/global/common/software/nersc/pe/conda-envs/24.1.0/python-3.11/nersc-python/lib/python3.11/shutil.py", line 720, in rmtree
+    _rmtree_safe_fd(fd, path, onerror)
+  File "/global/common/software/nersc/pe/conda-envs/24.1.0/python-3.11/nersc-python/lib/python3.11/shutil.py", line 666, in _rmtree_safe_fd
+    onerror(os.rmdir, fullname, sys.exc_info())
+    orig_st = os.lstat(path, dir_fd=dir_fd)
+  File "/global/common/software/nersc/pe/conda-envs/24.1.0/python-3.11/nersc-python/lib/python3.11/shutil.py", line 664, in _rmtree_safe_fd
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/pscratch/sd/m/mpoona/nfl_training/runs/nfl_combined_500ep_8gpu'
+    os.rmdir(entry.name, dir_fd=topfd)
+FileNotFoundError: [Errno 2] No such file or directory: 'weights'
+    onerror(os.rmdir, path, sys.exc_info())
+  File "/global/common/software/nersc/pe/conda-envs/24.1.0/python-3.11/nersc-python/lib/python3.11/shutil.py", line 736, in rmtree
+    os.rmdir(path, dir_fd=dir_fd)
+FileNotFoundError: [Errno 2] No such file or directory: '/pscratch/sd/m/mpoona/nfl_training/runs/nfl_combined_500ep_8gpu'
+srun: error: nid001081: tasks 0-2: Exited with exit code 1
+srun: Terminating StepId=45995363.1
+slurmstepd: error: *** STEP 45995363.1 ON nid001081 CANCELLED AT 2025-12-03T17:52:32 ***
+srun: error: nid001084: tasks 4-7: Terminated
+srun: error: nid001081: task 3: Terminated
+srun: Force Terminated StepId=45995363.1
+Command exited with non-zero status 143
+0.03user 0.03system 0:15.75elapsed 0%CPU (0avgtext+0avgdata 18428maxresident)k
+36inputs+104outputs (0major+3255minor)pagefaults 0swaps

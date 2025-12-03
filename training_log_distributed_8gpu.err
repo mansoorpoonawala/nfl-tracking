@@ -1,0 +1,51 @@
+nohup: ignoring input
+W1203 09:57:21.189000 2185347 /global/u2/m/mpoona/.local/perlmutter/python-3.11/lib/python3.11/site-packages/torch/distributed/run.py:803] 
+W1203 09:57:21.189000 2185347 /global/u2/m/mpoona/.local/perlmutter/python-3.11/lib/python3.11/site-packages/torch/distributed/run.py:803] *****************************************
+W1203 09:57:21.189000 2185347 /global/u2/m/mpoona/.local/perlmutter/python-3.11/lib/python3.11/site-packages/torch/distributed/run.py:803] Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+W1203 09:57:21.189000 2185347 /global/u2/m/mpoona/.local/perlmutter/python-3.11/lib/python3.11/site-packages/torch/distributed/run.py:803] *****************************************
+Traceback (most recent call last):
+  File "/global/homes/m/mpoona/.local/perlmutter/python-3.11/bin/torchrun", line 8, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/global/homes/m/mpoona/.local/perlmutter/python-3.11/lib/python3.11/site-packages/torch/distributed/elastic/multiprocessing/errors/__init__.py", line 357, in wrapper
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/global/homes/m/mpoona/.local/perlmutter/python-3.11/lib/python3.11/site-packages/torch/distributed/run.py", line 936, in main
+    run(args)
+  File "/global/homes/m/mpoona/.local/perlmutter/python-3.11/lib/python3.11/site-packages/torch/distributed/run.py", line 927, in run
+    elastic_launch(
+  File "/global/homes/m/mpoona/.local/perlmutter/python-3.11/lib/python3.11/site-packages/torch/distributed/launcher/api.py", line 156, in __call__
+    return launch_agent(self._config, self._entrypoint, list(args))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/global/homes/m/mpoona/.local/perlmutter/python-3.11/lib/python3.11/site-packages/torch/distributed/launcher/api.py", line 284, in launch_agent
+    result = agent.run()
+             ^^^^^^^^^^^
+  File "/global/homes/m/mpoona/.local/perlmutter/python-3.11/lib/python3.11/site-packages/torch/distributed/elastic/metrics/api.py", line 138, in wrapper
+    result = f(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^
+  File "/global/homes/m/mpoona/.local/perlmutter/python-3.11/lib/python3.11/site-packages/torch/distributed/elastic/agent/server/api.py", line 717, in run
+    result = self._invoke_run(role)
+             ^^^^^^^^^^^^^^^^^^^^^^
+  File "/global/homes/m/mpoona/.local/perlmutter/python-3.11/lib/python3.11/site-packages/torch/distributed/elastic/agent/server/api.py", line 875, in _invoke_run
+    self._initialize_workers(self._worker_group)
+  File "/global/homes/m/mpoona/.local/perlmutter/python-3.11/lib/python3.11/site-packages/torch/distributed/elastic/metrics/api.py", line 138, in wrapper
+    result = f(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^
+  File "/global/homes/m/mpoona/.local/perlmutter/python-3.11/lib/python3.11/site-packages/torch/distributed/elastic/agent/server/api.py", line 685, in _initialize_workers
+    self._rendezvous(worker_group)
+  File "/global/homes/m/mpoona/.local/perlmutter/python-3.11/lib/python3.11/site-packages/torch/distributed/elastic/metrics/api.py", line 138, in wrapper
+    result = f(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^
+  File "/global/homes/m/mpoona/.local/perlmutter/python-3.11/lib/python3.11/site-packages/torch/distributed/elastic/agent/server/api.py", line 500, in _rendezvous
+    rdzv_info = spec.rdzv_handler.next_rendezvous()
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/global/homes/m/mpoona/.local/perlmutter/python-3.11/lib/python3.11/site-packages/torch/distributed/elastic/rendezvous/dynamic_rendezvous.py", line 1170, in next_rendezvous
+    self._op_executor.run(join_op, deadline, self._get_deadline)
+  File "/global/homes/m/mpoona/.local/perlmutter/python-3.11/lib/python3.11/site-packages/torch/distributed/elastic/rendezvous/dynamic_rendezvous.py", line 684, in run
+    _delay(seconds=1)
+  File "/global/homes/m/mpoona/.local/perlmutter/python-3.11/lib/python3.11/site-packages/torch/distributed/elastic/rendezvous/utils.py", line 180, in _delay
+    time.sleep(seconds)
+KeyboardInterrupt
+Command terminated by signal 2
+2.19user 9.76system 4:09.50elapsed 4%CPU (0avgtext+0avgdata 485568maxresident)k
+20inputs+16outputs (0major+140272minor)pagefaults 0swaps

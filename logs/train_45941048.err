@@ -1,0 +1,6 @@
+/var/spool/slurmd/job45941048/slurm_script: line 14: venv/bin/activate: No such file or directory
+Traceback (most recent call last):
+  File "/pscratch/sd/m/mpoona/nfl_training/train_combined.py", line 31, in <module>
+    print(f"Best results saved to: {results.save_dir}")
+                                    ^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'save_dir'
