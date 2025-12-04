@@ -51,3 +51,6 @@ python3 main_nfl.py input_videos/game.mp4 --output_video output_videos/tracked.m
 # Custom output path
 python3 main_nfl.py input_videos/game.mp4 --output_video output_videos/my_output.mp4
 
+```
+Link For some sort of demo: https://drive.google.com/file/d/1LF1NG8SMEZJqwDzOK5A5xnBs1w0k0zTd/view?usp=drive_link
+
